@@ -1,0 +1,12 @@
+body {
+    background-color: #1f242e; /* Your updated blue-grey background */
+    color: #f5f5f5;            /* Off-white text for readability */
+}
+
+a {
+    color: #66b3ff; /* Light blue */
+}
+
+a:hover {
+    color: #99ccff; /* Lighter blue when hovering */
+}
