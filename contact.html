@@ -89,33 +89,35 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </ul>
 	<br>
 	<button id="vee24-custom-trigger">Chat with an Expert</button>
-    <script>
-	
-	
-function configureVee24Tab() {
+
+<script>
+    function configureVee24Tab() {
         if (typeof vee24 !== 'undefined' && vee24.api) {
             vee24.api.updateProps({
                 hAlign: 'right',
                 vAlign: 'middle',
-				type: 'sidebar'
+                type: 'sidebar'
             });
-            return true; // Indicates successful setup
+            return true;
         }
-        return false; // API not ready yet
+        return false;
     }
-	
-	
-	
-	
-	
+
     document.addEventListener('DOMContentLoaded', () => {
+        // 1. Run configuration as soon as the Vee24 API finishes loading
+        const vee24Check = setInterval(() => {
+            if (configureVee24Tab()) {
+                clearInterval(vee24Check);
+            }
+        }, 300);
+
         const chatBtn = document.querySelector('#vee24-custom-trigger');
         if (chatBtn) {
             chatBtn.addEventListener('click', () => {
-                // 1. Check if the Vee24 object exists on the page
                 if (typeof vee24 !== 'undefined' && vee24.api) {
                     try {
-                        // 2. Launch the panel
+                        // 2. Explicitly apply props before triggering helpMeNow()
+                        configureVee24Tab();
                         vee24.api.helpMeNow();
                     } catch (e) {
                         console.error("Vee24 API error:", e);
@@ -127,7 +129,7 @@ function configureVee24Tab() {
             });
         }
     });
-    </script>
+</script>
 	
 	
 	
