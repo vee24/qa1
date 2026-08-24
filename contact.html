@@ -87,6 +87,51 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           Appointment Panel</a>
       <li><a onclick="requestEngagement();" href="#">Launch Engagement Request</a></li>
     </ul>
+	<br>
+	<button id="vee24-custom-trigger">Chat with an Expert</button>
+    <script>
+	
+	
+function configureVee24Tab() {
+        if (typeof vee24 !== 'undefined' && vee24.api) {
+            vee24.api.updateProps({
+                hAlign: 'right',
+                vAlign: 'middle',
+				type: 'sidebar'
+            });
+            return true; // Indicates successful setup
+        }
+        return false; // API not ready yet
+    }
+	
+	
+	
+	
+	
+    document.addEventListener('DOMContentLoaded', () => {
+        const chatBtn = document.querySelector('#vee24-custom-trigger');
+        if (chatBtn) {
+            chatBtn.addEventListener('click', () => {
+                // 1. Check if the Vee24 object exists on the page
+                if (typeof vee24 !== 'undefined' && vee24.api) {
+                    try {
+                        // 2. Launch the panel
+                        vee24.api.helpMeNow();
+                    } catch (e) {
+                        console.error("Vee24 API error:", e);
+                    }
+                } else {
+                    console.warn("Vee24 API not loaded yet. Check CMS settings.");
+                    alert("Support is currently unavailable.");
+                }
+            });
+        }
+    });
+    </script>
+	
+	
+	
+	
     <h1>Direct Links</h1>
     <p>
     <ul>
