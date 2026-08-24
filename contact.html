@@ -88,7 +88,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <li><a onclick="requestEngagement();" href="#">Launch Engagement Request</a></li>
     </ul>
 	<br>
-	<button id="vee24-custom-trigger">Chat with an Expert</button>
+<button id="vee24-custom-trigger">Chat with an Expert</button>
 
 <script>
     function configureVee24Tab() {
@@ -103,10 +103,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         return false;
     }
 
+    // Direct helper to target the Web Component in the DOM
+    function forcePanelAttributes() {
+        const panel = document.querySelector('vee24-panel, #v24-pnl-engagement');
+        if (panel) {
+            panel.setAttribute('type', 'sidebar');
+            panel.setAttribute('halign', 'right');
+            panel.setAttribute('valign', 'middle');
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
-        // 1. Run configuration as soon as the Vee24 API finishes loading
+        // Run configuration polling on load
         const vee24Check = setInterval(() => {
             if (configureVee24Tab()) {
+                forcePanelAttributes();
                 clearInterval(vee24Check);
             }
         }, 300);
@@ -116,9 +127,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             chatBtn.addEventListener('click', () => {
                 if (typeof vee24 !== 'undefined' && vee24.api) {
                     try {
-                        // 2. Explicitly apply props before triggering helpMeNow()
                         configureVee24Tab();
                         vee24.api.helpMeNow();
+                        
+                        // Force update the DOM node attributes immediately and after render
+                        forcePanelAttributes();
+                        setTimeout(forcePanelAttributes, 50); 
                     } catch (e) {
                         console.error("Vee24 API error:", e);
                     }
