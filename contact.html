@@ -91,45 +91,39 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <button id="vee24-custom-trigger">Chat with an Expert</button>
 
 <script>
-    function forceSidebarLayout() {
-        const panel = document.querySelector('vee24-panel, #v24-pnl-engagement');
-        if (panel) {
-            // Target the Lit JS property directly
-            panel.type = 'sidebar';
-            panel.setAttribute('type', 'sidebar');
-            
-            // Swap the framework layout class
-            panel.classList.remove('v24-pnl-pill');
-            panel.classList.add('v24-pnl-sidebar');
-
-            // Force alignments
-            panel.setAttribute('halign', 'right');
-            panel.setAttribute('valign', 'middle');
+    function configureVee24Tab() {
+        if (typeof vee24 !== 'undefined' && vee24.api) {
+            vee24.api.updateProps({
+                hAlign: 'right',
+                vAlign: 'middle',
+                //type: 'sidebar'
+            });
+            return true;
         }
+        return false;
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+        // 1. Run configuration as soon as the Vee24 API finishes loading
+        const vee24Check = setInterval(() => {
+            if (configureVee24Tab()) {
+                clearInterval(vee24Check);
+            }
+        }, 300);
+
         const chatBtn = document.querySelector('#vee24-custom-trigger');
-        
         if (chatBtn) {
             chatBtn.addEventListener('click', () => {
                 if (typeof vee24 !== 'undefined' && vee24.api) {
                     try {
-                        // 1. Safe runtime alignment update
-                        vee24.api.updateProps({
-                            hAlign: 'right',
-                            vAlign: 'middle'
-                        });
-                        
-                        // 2. Launch panel
+                        // 2. Explicitly apply props before triggering helpMeNow()
+                        configureVee24Tab();
                         vee24.api.helpMeNow();
-                        
-                        // 3. Mutate Lit state right after element mounts
-                        setTimeout(forceSidebarLayout, 100);
                     } catch (e) {
                         console.error("Vee24 API error:", e);
                     }
                 } else {
+                    console.warn("Vee24 API not loaded yet. Check CMS settings.");
                     alert("Support is currently unavailable.");
                 }
             });
